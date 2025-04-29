@@ -1,3 +1,20 @@
+Tgis is NOT the original simulator. The original can be found [here](https://github.com/gpgpu-sim/gpgpu-sim_distribution).
+
+Further resources:
+
+* [Tutorials](http://gpgpu-sim.org/micro2012-tutorial/)
+* [Manual](http://gpgpu-sim.org/manual/index.php/Main_Page#Output_to_AerialVision_Performance_Visualizer)
+
+
+
+The goal of this fork, is to take memory snapshots during execution.
+
+
+
+---
+
+
+
 Welcome to GPGPU-Sim, a cycle-level simulator modeling contemporary graphics
 processing units (GPUs) running GPU computing workloads written in CUDA or
 OpenCL. Also included in GPGPU-Sim is a performance visualization tool called
@@ -226,7 +243,8 @@ If running applications which use cuDNN or cuBLAS:
 	export CUDNN_PATH=<Path To cuDNN Directory>
 	export LD_LIBRARY_PATH=$CUDA_INSTALL_PATH/lib64:$CUDA_INSTALL_PATH/lib:$CUDNN_PATH/lib64
 
-	
+
+​	
 
 ## Step 2: Build
 
@@ -430,7 +448,7 @@ Some applications take several hours to execute on GPGPUSim. This is because the
 
 
 ## Debugging failing GPGPU-Sim Regressions
- 
+
 Credits: Tor M Aamodt
 
 To debug failing GPGPU-Sim regression tests you need to run them locally.  The fastest way to do this, assuming you are working with GPGPU-Sim versions more recent than the GPGPU-Sim dev branch circa March 28, 2018 (commit hash 2221d208a745a098a60b0d24c05007e92aaba092), is to install Docker.  The instructions below were tested with Docker CE version 18.03 on Ubuntu and Mac OS.  Docker will enable you to run the same set of regressions used by GPGPU-Sim when submitting a pull request to https://github.com/gpgpu-sim/gpgpu-sim_distribution and also allow you to log in and launch GPGPU-Sim in gdb so you can inspect failures.  
