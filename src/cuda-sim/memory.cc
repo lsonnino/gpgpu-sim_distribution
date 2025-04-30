@@ -55,10 +55,23 @@ template <unsigned BSIZE>
 void memory_space_impl<BSIZE>::write_only(mem_addr_t offset, mem_addr_t index,
                                           size_t length, const void *data) {
   m_data[index].write(offset, length, (const unsigned char *)data);
-  if (unsaved_changes == 0) {
-    fprintf(stdout, "LSONNINO: set unsaved_changes flag to 1\n");
-    fflush(stdout);
-    unsaved_changes = 1;
+  // If the global memory was modified, export a checkpoint of the memory
+  if (strcmp(m_name.c_str(), "global") == 0) {
+    char global_mem_checkpoint_fname[256];
+    int ret = snprintf(global_mem_checkpoint_fname, sizeof(global_mem_checkpoint_fname), "checkpoint_%llu", gpu_tot_sim_cycle);
+    if (ret < 0 || ret >= sizeof(global_mem_checkpoint_fname)) {
+        fprintf(stderr, "Error: Checkpoint filename truncated or snprintf failed.\n");
+        return;
+    }
+
+    FILE *global_mem_fp = fopen(global_mem_checkpoint_fname, "a");
+    assert(global_mem_fp != NULL);
+    print("%08x", global_mem_fp);
+    fflush(global_mem_fp);
+    if (fclose(global_mem_fp) != 0) {
+        fprintf(stderr, "Error: Failed to close the file '%s'.\n", global_mem_checkpoint_fname);
+        return;
+    }
   }
 }
 
@@ -109,10 +122,24 @@ void memory_space_impl<BSIZE>::write(mem_addr_t addr, size_t length,
             i->first, thd, pI);
     }
   }
-  if (unsaved_changes == 0) {
-    fprintf(stdout, "LSONNINO: set unsaved_changes flag to 1\n");
-    fflush(stdout);
-    unsaved_changes = 1;
+
+  // If the global memory was modified, export a checkpoint of the memory
+  if (strcmp(m_name.c_str(), "global") == 0) {
+    char global_mem_checkpoint_fname[256];
+    int ret = snprintf(global_mem_checkpoint_fname, sizeof(global_mem_checkpoint_fname), "checkpoint_%llu", gpu_tot_sim_cycle);
+    if (ret < 0 || ret >= sizeof(global_mem_checkpoint_fname)) {
+        fprintf(stderr, "Error: Checkpoint filename truncated or snprintf failed.\n");
+        return;
+    }
+
+    FILE *global_mem_fp = fopen(global_mem_checkpoint_fname, "a");
+    assert(global_mem_fp != NULL);
+    print("%08x", global_mem_fp);
+    fflush(global_mem_fp);
+    if (fclose(global_mem_fp) != 0) {
+        fprintf(stderr, "Error: Failed to close the file '%s'.\n", global_mem_checkpoint_fname);
+        return;
+    }
   }
 }
 
