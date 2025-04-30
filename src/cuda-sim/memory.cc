@@ -45,6 +45,8 @@ memory_space_impl<BSIZE>::memory_space_impl(std::string name,
     }
   }
   assert(m_log2_block_size != (unsigned)-1);
+
+  unsaved_changes(0);
 }
 
 template <unsigned BSIZE>
@@ -100,6 +102,8 @@ void memory_space_impl<BSIZE>::write(mem_addr_t addr, size_t length,
             i->first, thd, pI);
     }
   }
+
+  unsaved_changes = 1;
 }
 
 template <unsigned BSIZE>
@@ -172,6 +176,8 @@ void memory_space_impl<BSIZE>::print(const char *format, FILE *fout) const {
     fprintf(fout, "%s %08llx:", m_name.c_str(), i_page->first);
     i_page->second.print(format, fout);
   }
+
+  unsaved_changes = 0;
 }
 
 template <unsigned BSIZE>

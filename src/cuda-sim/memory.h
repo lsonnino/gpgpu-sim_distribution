@@ -101,6 +101,8 @@ class memory_space {
   virtual void read(mem_addr_t addr, size_t length, void *data) const = 0;
   virtual void print(const char *format, FILE *fout) const = 0;
   virtual void set_watch(addr_t addr, unsigned watchpoint) = 0;
+
+  unsigned unsaved_changes;
 };
 
 template <unsigned BSIZE>

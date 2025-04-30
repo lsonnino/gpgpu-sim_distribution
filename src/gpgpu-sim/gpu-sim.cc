@@ -2207,6 +2207,24 @@ void gpgpu_sim::cycle() {
     gpgpu_ctx->device_runtime->launch_one_device_kernel();
 #endif
   }
+
+  // If the global memory was modified, export a checkpoint of the memory
+  if (m_global_mem && m_global_mem->unsaved_changes == 1) {
+    char global_mem_checkpoint_fname[256];
+    int ret = snprintf(global_mem_checkpoint_fname, sizeof(global_mem_checkpoint_fname), "checkpoint_%llu", gpu_tot_sim_cycle);
+    if (ret < 0 || ret >= sizeof(global_mem_checkpoint_fname)) {
+        fprintf(stderr, "Error: Checkpoint filename truncated or snprintf failed.\n");
+        return;
+    }
+
+    FILE *global_mem_fp = fopen(global_mem_checkpoint_fname, "w");
+    assert(global_mem_fp != NULL);
+    m_global_mem->print("%08x", global_mem_fp);
+    if (fclose(global_mem_fp) != 0) {
+        fprintf(stderr, "Error: Failed to close the file '%s'.\n", global_mem_checkpoint_fname);
+        return;
+    }
+  }
 }
 
 void sst_gpgpu_sim::cycle() {
