@@ -46,7 +46,7 @@ memory_space_impl<BSIZE>::memory_space_impl(std::string name,
   }
   assert(m_log2_block_size != (unsigned)-1);
 
-  unsaved_changes(0);
+  unsaved_changes = 0;
 }
 
 template <unsigned BSIZE>

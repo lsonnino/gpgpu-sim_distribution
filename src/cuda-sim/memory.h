@@ -102,7 +102,7 @@ class memory_space {
   virtual void print(const char *format, FILE *fout) const = 0;
   virtual void set_watch(addr_t addr, unsigned watchpoint) = 0;
 
-  unsigned unsaved_changes;
+  mutable unsigned unsaved_changes;
 };
 
 template <unsigned BSIZE>
