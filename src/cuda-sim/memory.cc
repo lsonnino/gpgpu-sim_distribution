@@ -46,6 +46,7 @@ memory_space_impl<BSIZE>::memory_space_impl(std::string name,
   }
   assert(m_log2_block_size != (unsigned)-1);
 
+  cout << "LSONNINO: init unsaved_changes flag to 0\n";
   unsaved_changes = 0;
 }
 
@@ -53,6 +54,7 @@ template <unsigned BSIZE>
 void memory_space_impl<BSIZE>::write_only(mem_addr_t offset, mem_addr_t index,
                                           size_t length, const void *data) {
   m_data[index].write(offset, length, (const unsigned char *)data);
+  cout << "LSONNINO: set unsaved_changes flag to 1\n";
   unsaved_changes = 1;
 }
 
@@ -103,7 +105,7 @@ void memory_space_impl<BSIZE>::write(mem_addr_t addr, size_t length,
             i->first, thd, pI);
     }
   }
-
+  cout << "LSONNINO: set unsaved_changes flag to 1\n";
   unsaved_changes = 1;
 }
 
@@ -171,6 +173,7 @@ void memory_space_impl<BSIZE>::read(mem_addr_t addr, size_t length,
 
 template <unsigned BSIZE>
 void memory_space_impl<BSIZE>::print(const char *format, FILE *fout) const {
+  cout << "LSONNINO: print memory\n";
   typename map_t::const_iterator i_page;
 
   for (i_page = m_data.begin(); i_page != m_data.end(); ++i_page) {
@@ -178,6 +181,7 @@ void memory_space_impl<BSIZE>::print(const char *format, FILE *fout) const {
     i_page->second.print(format, fout);
   }
 
+  cout << "LSONNINO: set unsaved_changes flag to 0\n";
   unsaved_changes = 0;
 }
 
