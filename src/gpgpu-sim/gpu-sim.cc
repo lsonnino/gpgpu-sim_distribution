@@ -2221,6 +2221,7 @@ void gpgpu_sim::cycle() {
     FILE *global_mem_fp = fopen(global_mem_checkpoint_fname, "w");
     assert(global_mem_fp != NULL);
     m_global_mem->print("%08x", global_mem_fp);
+    fflush(global_mem_fp);
     if (fclose(global_mem_fp) != 0) {
         fprintf(stderr, "Error: Failed to close the file '%s'.\n", global_mem_checkpoint_fname);
         return;
