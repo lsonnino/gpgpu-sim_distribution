@@ -2210,7 +2210,7 @@ void gpgpu_sim::cycle() {
 
   // If the global memory was modified, export a checkpoint of the memory
   if (m_global_mem && m_global_mem->unsaved_changes == 1) {
-    cout << "LSONNINO: there are unsaved changes\n";
+    fprintf(stdout, "LSONNINO: there are unsaved changes\n");
     char global_mem_checkpoint_fname[256];
     int ret = snprintf(global_mem_checkpoint_fname, sizeof(global_mem_checkpoint_fname), "checkpoint_%llu", gpu_tot_sim_cycle);
     if (ret < 0 || ret >= sizeof(global_mem_checkpoint_fname)) {
@@ -2225,6 +2225,8 @@ void gpgpu_sim::cycle() {
         fprintf(stderr, "Error: Failed to close the file '%s'.\n", global_mem_checkpoint_fname);
         return;
     }
+    fflush(stdout);
+    fprintf(stdout, "LSONNINO: global memory checkpoint saved to %s\n", global_mem_checkpoint_fname);
   }
 }
 
