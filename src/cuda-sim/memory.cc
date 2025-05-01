@@ -46,8 +46,10 @@ memory_space_impl<BSIZE>::memory_space_impl(std::string name,
   }
   assert(m_log2_block_size != (unsigned)-1);
 
-  fprintf(stdout, "LSONNINO: init unsaved_changes flag to 0\n");
-  fflush(stdout);
+  if ((strcmp(m_name.c_str(), "global") == 0)) {
+    fprintf(stdout, "LSONNINO [memory_space_impl]: init unsaved_changes flag to 0\n");
+    fflush(stdout);
+  }
   unsaved_changes = 0;
 }
 
@@ -55,8 +57,8 @@ template <unsigned BSIZE>
 void memory_space_impl<BSIZE>::write_only(mem_addr_t offset, mem_addr_t index,
                                           size_t length, const void *data) {
   m_data[index].write(offset, length, (const unsigned char *)data);
-  if (unsaved_changes == 0) {
-    fprintf(stdout, "LSONNINO: set unsaved_changes flag to 1\n");
+  if ((strcmp(m_name.c_str(), "global") == 0) && (unsaved_changes == 0)) {
+    fprintf(stdout, "LSONNINO [write_only]: set unsaved_changes flag to 1\n");
     fflush(stdout);
     unsaved_changes = 1;
   }
@@ -109,8 +111,8 @@ void memory_space_impl<BSIZE>::write(mem_addr_t addr, size_t length,
             i->first, thd, pI);
     }
   }
-  if (unsaved_changes == 0) {
-    fprintf(stdout, "LSONNINO: set unsaved_changes flag to 1\n");
+  if ((strcmp(m_name.c_str(), "global") == 0) && (unsaved_changes == 0)) {
+    fprintf(stdout, "LSONNINO [write]: set unsaved_changes flag to 1\n");
     fflush(stdout);
     unsaved_changes = 1;
   }
@@ -188,7 +190,7 @@ void memory_space_impl<BSIZE>::print(const char *format, FILE *fout) const {
     i_page->second.print(format, fout);
   }
 
-  fprintf(stdout, "LSONNINO: set unsaved_changes flag to 0\n");
+  fprintf(stdout, "LSONNINO [print]: set unsaved_changes flag to 0\n");
   fflush(stdout);
   unsaved_changes = 0;
 }
