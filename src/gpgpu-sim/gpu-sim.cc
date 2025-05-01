@@ -2000,6 +2000,7 @@ void gpgpu_sim::cycle() {
     }
   }
   partiton_replys_in_parallel += partiton_replys_in_parallel_per_cycle;
+  fprintf(stdout, "LSONNINO: 1\n");
 
   if (clock_mask & DRAM) {
     for (unsigned i = 0; i < m_memory_config->m_n_mem; i++) {
@@ -2045,6 +2046,7 @@ void gpgpu_sim::cycle() {
       }
     }
   }
+  fprintf(stdout, "LSONNINO: 2\n");
   partiton_reqs_in_parallel += partiton_reqs_in_parallel_per_cycle;
   if (partiton_reqs_in_parallel_per_cycle > 0) {
     partiton_reqs_in_parallel_util += partiton_reqs_in_parallel_per_cycle;
@@ -2055,6 +2057,7 @@ void gpgpu_sim::cycle() {
     icnt_transfer();
   }
 
+  fprintf(stdout, "LSONNINO: 3\n");
   if (clock_mask & CORE) {
     // L1 cache + shader core pipeline stages
     m_power_stats->pwr_mem_stat->core_cache_stats[CURRENT_STAT_IDX].clear();
@@ -2207,6 +2210,7 @@ void gpgpu_sim::cycle() {
     gpgpu_ctx->device_runtime->launch_one_device_kernel();
 #endif
   }
+  fprintf(stdout, "LSONNINO: 4\n");
 
   // If the global memory was modified, export a checkpoint of the memory
   if (m_global_mem && m_global_mem->unsaved_changes == 1) {
