@@ -7,7 +7,7 @@ Further resources:
 
 
 
-The goal of this fork, is to take memory snapshots during execution.
+The goal of this fork, is to take memory snapshots during execution. Only works in performance mode (not in pure functional simulation mode). Make sure global env variable `PTX_SIM_MODE_FUNC=0`
 
 
 

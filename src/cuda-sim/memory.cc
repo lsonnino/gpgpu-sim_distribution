@@ -182,7 +182,7 @@ void memory_space_impl<BSIZE>::read(mem_addr_t addr, size_t length,
 
 template <unsigned BSIZE>
 void memory_space_impl<BSIZE>::print(const char *format, FILE *fout) const {
-  fprintf(stdout, "LSONNINO: print memory\n");
+  fprintf(stdout, "LSONNINO [print]: print memory\n");
   typename map_t::const_iterator i_page;
 
   for (i_page = m_data.begin(); i_page != m_data.end(); ++i_page) {
@@ -190,7 +190,6 @@ void memory_space_impl<BSIZE>::print(const char *format, FILE *fout) const {
     i_page->second.print(format, fout);
   }
 
-  fprintf(stdout, "LSONNINO [print]: set unsaved_changes flag to 0\n");
   fflush(stdout);
   unsaved_changes = 0;
 }
