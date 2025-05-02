@@ -1251,6 +1251,28 @@ void gpgpu_sim::update_stats() {
   m_total_cta_launched = 0;
   gpu_completed_cta = 0;
   gpu_occupancy = occupancy_stats();
+
+  // If the global memory was modified, export a checkpoint of the memory
+  if (m_global_mem && m_global_mem->unsaved_changes == 1) {
+    // fprintf(stdout, "LSONNINO [cycle]: there are unsaved changes\n");
+    char global_mem_checkpoint_fname[256];
+    int ret = snprintf(global_mem_checkpoint_fname, sizeof(global_mem_checkpoint_fname), "checkpoint_%llu", gpu_tot_sim_cycle);
+    if (ret < 0 || ret >= sizeof(global_mem_checkpoint_fname)) {
+        fprintf(stderr, "Error: Checkpoint filename truncated or snprintf failed.\n");
+        return;
+    }
+
+    FILE *global_mem_fp = fopen(global_mem_checkpoint_fname, "w");
+    assert(global_mem_fp != NULL);
+    m_global_mem->print("%08x", global_mem_fp);
+    fflush(global_mem_fp);
+    if (fclose(global_mem_fp) != 0) {
+        fprintf(stderr, "Error: Failed to close the file '%s'.\n", global_mem_checkpoint_fname);
+        return;
+    }
+    // fprintf(stdout, "LSONNINO [cycle]: global memory checkpoint saved to %s\n", global_mem_checkpoint_fname);
+    // fflush(stdout);
+  }
 }
 
 PowerscalingCoefficients *gpgpu_sim::get_scaling_coeffs() {
@@ -2206,28 +2228,6 @@ void gpgpu_sim::cycle() {
     // launch device kernel
     gpgpu_ctx->device_runtime->launch_one_device_kernel();
 #endif
-  }
-
-  // If the global memory was modified, export a checkpoint of the memory
-  if (m_global_mem && m_global_mem->unsaved_changes == 1) {
-    fprintf(stdout, "LSONNINO [cycle]: there are unsaved changes\n");
-    char global_mem_checkpoint_fname[256];
-    int ret = snprintf(global_mem_checkpoint_fname, sizeof(global_mem_checkpoint_fname), "checkpoint_%llu", gpu_tot_sim_cycle);
-    if (ret < 0 || ret >= sizeof(global_mem_checkpoint_fname)) {
-        fprintf(stderr, "Error: Checkpoint filename truncated or snprintf failed.\n");
-        return;
-    }
-
-    FILE *global_mem_fp = fopen(global_mem_checkpoint_fname, "w");
-    assert(global_mem_fp != NULL);
-    m_global_mem->print("%08x", global_mem_fp);
-    fflush(global_mem_fp);
-    if (fclose(global_mem_fp) != 0) {
-        fprintf(stderr, "Error: Failed to close the file '%s'.\n", global_mem_checkpoint_fname);
-        return;
-    }
-    fflush(stdout);
-    fprintf(stdout, "LSONNINO [cycle]: global memory checkpoint saved to %s\n", global_mem_checkpoint_fname);
   }
 }
 
